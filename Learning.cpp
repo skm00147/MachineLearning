@@ -20,14 +20,13 @@ float DeltaSigmoid(float x)
 int Random()
 {
     int x;
-    int a=1103515245, c=12345, m=pow(2, 10);
+    int a=1103515245, c=12345, m=10000;
     
     FILE *Seed = fopen("RandomSeed.txt", "r");    
     fscanf(Seed, "%d", &x);
     fclose(Seed);
     
     x = (a*x+c)%m;
-    x = x%10000;
     if(x<0)
     	x = -x;
     
@@ -234,7 +233,7 @@ void Learning(int Mode, int Seed)
         {
             for(int j=0; j<28; j++)
             {
-                Weight[k][i][j] -= DeltaErrorOverOutput[k]*DeltaOutputOverSum[k]*ImageData[i][j]*2;
+                Weight[k][i][j] -= DeltaErrorOverOutput[k]*DeltaOutputOverSum[k]*ImageData[i][j]/10;
                 
                 if(Weight[k][i][j] < 0)
                 {
