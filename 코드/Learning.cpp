@@ -1,17 +1,17 @@
 #include <stdio.h>
 #include <math.h>
 
-float Sigmoid(float x)    //시그모이드함수: 활성함수
+double Sigmoid(double x)    //시그모이드함수: 활성함수
 {
-    float y;
+    double y;
     y = 1/(1+exp(-x));    // 시그모이드함수: y=1/(1+e^(-x))
 
     return y;
 }
 
-float DeltaSigmoid(float x)    // 시그모이드함수를 미분한 함수
+double DeltaSigmoid(double x)    // 시그모이드함수를 미분한 함수
 {
-    float y;
+    double y;
     y = Sigmoid(x)*(1-Sigmoid(x));    // 시그모이드미분함수:  y=(e^(-x))/((1+e^(-x))^2)
     
     return y;
@@ -131,7 +131,7 @@ void Learning(int Mode, int Seed)    //기계학습 함수: 프로그램의 핵심
 	printf("\n");
 	
     FILE *Mnist = fopen("MNIST_test.txt", "r");    // MNIST데이터가  들어있는 파일을 읽기모드로 열기 
-    float ImageData[28][28];    // MNIST데이터를 저장하기 위한 배열 
+    double ImageData[28][28];    // MNIST데이터를 저장하기 위한 배열 
     int Target;    // MNIST데이터의 정답을 저장하기 위한 변수 
     for(int k=0; k<=Seed; k++)    // (랜덤함수에서 받은 값)번째에 위치한 데이터만 사용 
     {
@@ -140,7 +140,7 @@ void Learning(int Mode, int Seed)    //기계학습 함수: 프로그램의 핵심
         {
             for(int j=0; j<28; j++)
             {
-                fscanf(Mnist, "%f ", &ImageData[i][j]);
+                fscanf(Mnist, "%lf ", &ImageData[i][j]);
                 if(k == Seed) 
                 {
 					if(Mode==1)   // 과정출력학습을 선택했을때 
@@ -160,7 +160,7 @@ void Learning(int Mode, int Seed)    //기계학습 함수: 프로그램의 핵심
     
     FILE *WeightData = fopen("WeightData.txt", "r");    // 가중치가 들어있는 파일을 읽기모드로 열기 
     FILE *MinusWeightData = fopen("MinusWeightData.txt", "r");    // 가중치가 음수인지 양수인지에 대한 정보가 담긴 파일을 읽기모드로 열기 
-    float Weight[10][28][28];    // 가중치를 저장하기 위한 배열 
+    double Weight[10][28][28];    // 가중치를 저장하기 위한 배열 
     int MinusWeight[10][28][28];    // 가중치가 음수인지 양수인지에 대한 정보를 저장하기 위한 배열 
     for(int k=0; k<10; k++)
     {
@@ -168,7 +168,7 @@ void Learning(int Mode, int Seed)    //기계학습 함수: 프로그램의 핵심
         {
             for(int j=0; j<28; j++)
             {
-                fscanf(WeightData, "%f ", &Weight[k][i][j]);
+                fscanf(WeightData, "%lf ", &Weight[k][i][j]);
                 fscanf(MinusWeightData, "%d ", &MinusWeight[k][i][j]);
                 
                 Weight[k][i][j] /= 10000;    // 파일을 읽을때 소수를 읽을 수 없어서 정수로 저장해둔 값을 실수로 변경 (가중치를 저장할 때 10000배하여 정수로 저장했기 때문에) 
@@ -182,9 +182,9 @@ void Learning(int Mode, int Seed)    //기계학습 함수: 프로그램의 핵심
     fclose(WeightData);
     fclose(MinusWeightData);
     
-    float OutputLayer[10];    // 출력층의 결과값을 저장할 배열 
-    float Sum;    // 입력층*가중치의 총합을 저장할 배열 
-    float DeltaOutputOverSum[10];    // 결과값을  총합에 대해 미분한 값(즉, 활성함수를 미분한 값)을 저장할 배열 
+    double OutputLayer[10];    // 출력층의 결과값을 저장할 배열 
+    double Sum;    // 입력층*가중치의 총합을 저장할 배열 
+    double DeltaOutputOverSum[10];    // 결과값을  총합에 대해 미분한 값(즉, 활성함수를 미분한 값)을 저장할 배열 
     for(int k=0; k<10; k++)
     {
         Sum = 0;
@@ -199,10 +199,10 @@ void Learning(int Mode, int Seed)    //기계학습 함수: 프로그램의 핵심
         DeltaOutputOverSum[k] = DeltaSigmoid(Sum);    // 결과값을  총합에 대해 미분한 값 저장 
     }
     
-    float Result[2] = {0, 0};    // 출력층에서 최댓값을 선별하기 위한 배열 (Result[0]: 결과값의 최댓값 / Result[1]: 최댓값을 내보낸 출력층의 노드의 인덱스) 
+    double Result[2] = {0, 0};    // 출력층에서 최댓값을 선별하기 위한 배열 (Result[0]: 결과값의 최댓값 / Result[1]: 최댓값을 내보낸 출력층의 노드의 인덱스) 
     for(int k=0; k<10; k++)
     {
-        printf("%f  ", OutputLayer[k]);
+        printf("%lf  ", OutputLayer[k]);
         if(Result[0] < OutputLayer[k])
         {
             Result[0] = OutputLayer[k];
@@ -211,8 +211,8 @@ void Learning(int Mode, int Seed)    //기계학습 함수: 프로그램의 핵심
     }
     printf("\n\n예측된 값은 %d입니다.", (int)Result[1]);
     
-    float ErrorLevel=0;    // 오차율을 저장하기 위한 변수 (MSE 이용) 
-	float DeltaErrorOverOutput[10];    // 오차율을 결과값에 미분한 값을 저장할 배열 
+    double ErrorLevel=0;    // 오차율을 저장하기 위한 변수 (MSE 이용) 
+	double DeltaErrorOverOutput[10];    // 오차율을 결과값에 미분한 값을 저장할 배열 
     for(int k=0; k<10; k++)
     {
         if(k==Target)
@@ -228,7 +228,7 @@ void Learning(int Mode, int Seed)    //기계학습 함수: 프로그램의 핵심
     }
     ErrorLevel /= 10;
     
-    printf("\n\n[예측%s] (정답: %d) (오차수준: %f)", (int)Result[1]==Target ? "성공":"실패", Target, ErrorLevel); 
+    printf("\n\n[예측%s] (정답: %d) (오차수준: %lf)", (int)Result[1]==Target ? "성공":"실패", Target, ErrorLevel); 
     
     FILE *NewWeightData = fopen("WeightData.txt", "w");    // 가중치가 들어있는 파일을 쓰기모드로 열기 
     FILE *NewMinusWeightData = fopen("MinusWeightData.txt", "w");    // 가중치가 음수인지 양수인지에 대한 정보가 담긴 파일을 쓰기모드로 열기
