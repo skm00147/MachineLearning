@@ -104,7 +104,7 @@ int LearningDataReset()    // 학습데이터초기화 함수: 학습데이터초기화를 선택했을
 		        {
 		            for(int j=0; j<28; j++)
 		            {
-		                fprintf(WeightData, "%d ", 100);
+		                fprintf(WeightData, "%d ", 100000);
 		                fprintf(MinusWeightData, "%d ", 0);
 		            }
 		        }
@@ -171,7 +171,7 @@ void Learning(int Mode, int Seed)    //기계학습 함수: 프로그램의 핵심
                 fscanf(WeightData, "%lf ", &Weight[k][i][j]);
                 fscanf(MinusWeightData, "%d ", &MinusWeight[k][i][j]);
                 
-                Weight[k][i][j] /= 10000;    // 파일을 읽을때 소수를 읽을 수 없어서 정수로 저장해둔 값을 실수로 변경 (가중치를 저장할 때 10000배하여 정수로 저장했기 때문에) 
+                Weight[k][i][j] /= 10000000;    // 파일을 읽을때 소수를 읽을 수 없어서 정수로 저장해둔 값을 실수로 변경 (가중치를 저장할 때 10000배하여 정수로 저장했기 때문에) 
                 if(MinusWeight[k][i][j] == 1)    // 파일을 읽을때 음수를 읽을 수 없어서 양수로 저장해둔 값을 음수로 변경 (MinusWeight가 1이라면 가중치가 음수, 0이라면 가중치가 양수)
                 {
                     Weight[k][i][j] = -Weight[k][i][j];
@@ -250,7 +250,7 @@ void Learning(int Mode, int Seed)    //기계학습 함수: 프로그램의 핵심
                     MinusWeight[k][i][j] = 0;    // 가중치가 음수라면 MinusWeight에 1을 저장 
                 }
                 
-                fprintf(NewWeightData, "%d ", (int)(Weight[k][i][j]*10000));    // 파일을 읽을때 소수를 읽을 수 없어서 10000배하여 정수로 저장
+                fprintf(NewWeightData, "%d ", (int)(Weight[k][i][j]*10000000));    // 파일을 읽을때 소수를 읽을 수 없어서 10000배하여 정수로 저장
                 fprintf(NewMinusWeightData, "%d ", MinusWeight[k][i][j]);    // 가중치가 음수인지 양수인지에 대한 정보 저장 
             }
         }
